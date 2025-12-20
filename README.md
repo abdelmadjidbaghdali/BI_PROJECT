@@ -1,120 +1,52 @@
-# 📊 Northwind Business Intelligence Project
+# Northwind BI Project
 
-## 🧠 Project Description
+This project implements a complete BI solution based on the Northwind database. It implements a **Hybrid Architecture** retrieving data from both **SQL Server** and **Microsoft Access**, with a comprehensive ETL process in Python and an analytical dashboard using Streamlit.
 
-This project is an academic **Business Intelligence (BI)** project developed as part of a university course.
-It is based on the **Northwind** database and aims to demonstrate the main concepts of BI through a practical implementation.
+## Project Structure
 
-The project focuses on:
+- `data/`: Contains raw data (CSV/Access) and cleaned data.
+- `scripts/`: Python scripts for ETL and Visualization.
+    - `etl.py`: Main ETL script. Orchestrates connections to SQL Server and Access.
+    - `extract.py`: Handles hybrid extraction logic (splitting tables between sources).
+    - `transform.py`: Cleans and normalizes data.
+    - `dashboard.py`: Streamlit dashboard.
+- `scriptNorthwind.txt`: SQL script to initialize the SQL Server database.
 
-* Extracting data from relational databases (SQL Server or Microsoft Access)
-* Transforming and cleaning data using Python (ETL process)
-* Loading the processed data into an analytical database
-* Creating an analytical dashboard to visualize key business indicators
+## Setup
 
----
+1. **Install Dependencies:**
+   ```bash
+   pip install -r requirements.txt
+   ```
+   *Note: On Windows, ensure you have the correct ODBC drivers installed for SQL Server and Access (`ACE.OLEDB`).*
 
-## 🎯 Project Objectives
+2. **Data Sources:**
+   - **SQL Server:** Run `scriptNorthwind.txt` to populate your SQL Server instance.
+   - **Access:** Place your `Northwind.accdb` in `data/raw/` (or specify path).
 
-* Understand and apply Business Intelligence concepts
-* Implement an ETL process using Python
-* Analyze sales data from the Northwind database
-* Create visual reports and dashboards for decision support
+## Running the Project
 
----
-
-## 🗂️ Project Structure
-
-```
-Northwind-BI/
-│
-├── data/           # Raw and processed data
-├── scripts/        # Python scripts
-│   ├── etl.py      # ETL process (Extract, Transform, Load)
-│   └── dashboard.py# Analytical dashboard
-├── reports/        # Project report (PDF)
-├── figures/        # Charts and visual outputs
-├── video/          # Presentation video (screen recording + voice)
-├── notebooks/      # Jupyter notebooks (optional)
-├── README.md       # Project documentation
-└── requirements.txt
-```
-
----
-
-## ⚙️ Technologies Used
-
-* Python
-* Pandas
-* SQLAlchemy / PyODBC
-* SQLite (analytical database)
-* Streamlit / Plotly
-* Jupyter Notebook
-
----
-
-## 🔄 ETL Process
-
-1. **Extract**: Data is extracted from the Northwind database.
-2. **Transform**:
-
-   * Data cleaning and formatting
-   * Date processing
-   * Calculation of sales indicators
-3. **Load**: Transformed data is loaded into an analytical database for analysis.
-
----
-
-## 📈 Dashboard & KPIs
-
-The dashboard presents the following key performance indicators:
-
-* Total Sales
-* Number of Orders
-* Average Order Value
-* Sales evolution over time
-* Top customers and products
-
----
-
-## ▶️ How to Run the Project
-
-### 1️⃣ Install Dependencies
+### 1. Run ETL Process (Hybrid Mode)
+To extract from both databases and merge them:
 
 ```bash
-pip install -r requirements.txt
+python scripts/etl.py --sql-host localhost --sql-user sa --sql-pass yourPassword --access "data/raw/Northwind 2012.accdb"
 ```
 
-### 2️⃣ Run the ETL Process
-
+*CSV Fallback Mode (for testing without DBs):*
 ```bash
-python scripts/etl.py
+python scripts/etl.py --csv-fallback data/raw
 ```
 
-### 3️⃣ Launch the Dashboard
+### 2. Launch Dashboard
+To view the analytical dashboard:
 
 ```bash
 streamlit run scripts/dashboard.py
 ```
 
----
-
-## 📄 Deliverables
-
-* Python ETL scripts
-* Analytical dashboard
-* Project report (PDF)
-* Presentation video
-* GitHub repository with structured files
-
----
-
-## 👤 Author
-
-* **Name:** Abdelmajid Baghdali
-* **Course:** Business Intelligence
-* **Project Type:** Individual
-
----
-
-⭐ This project is developed for educational purposes only.
+## Hybrid Extraction Logic
+The system is configured (in `scripts/extract.py`) to split tables as follows:
+- **SQL Server:** Orders, OrderDetails, Products, Categories
+- **Access:** Customers, Employees, Shippers, Suppliers
+*You can modify `source_map` in `scripts/extract.py` to change this distribution.*
